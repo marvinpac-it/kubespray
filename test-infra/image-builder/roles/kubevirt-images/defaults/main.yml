@@ -84,9 +84,9 @@ images:
     tag: "latest"
 
   rockylinux-9:
-    filename: Rocky-9-GenericCloud-9.0-20220830.0.x86_64.qcow2
-    url: https://download.rockylinux.org/pub/rocky/9.0/images/x86_64/Rocky-9-GenericCloud-9.0-20220830.0.x86_64.qcow2
-    checksum: sha256:f02570e0ad3653df7f56baa8157739dbe92a003234acd5824dcf94d24694e20b
+    filename: Rocky-9-GenericCloud-Base-9.5-20241118.0.x86_64.qcow2
+    url: https://download.rockylinux.org/pub/rocky/9.5/images/x86_64/Rocky-9-GenericCloud-Base-9.5-20241118.0.x86_64.qcow2
+    checksum: sha256:069493fdc807300a22176540e9171fcff2227a92b40a7985a0c1c9e21aeebf57
     converted: true
     tag: "latest"
 
@@ -122,5 +122,19 @@ images:
     filename: openSUSE-Leap-15.3.x86_64-1.0.1-NoCloud-Build2.63.qcow2
     url: https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.3/images/openSUSE-Leap-15.3.x86_64-1.0.1-NoCloud-Build2.63.qcow2
     checksum: sha256:289248945e2d058551c71c1bdcb31a361cefe7136c7fd88a09b524eedfaf5215
+    converted: true
+    tag: "latest"
+
+  openeuler-2203:
+    filename: openEuler-22.03-LTS-SP4-x86_64.qcow2.xz
+    url: https://mirrors.ocf.berkeley.edu/openeuler/openEuler-22.03-LTS-SP4/virtual_machine_img/x86_64/openEuler-22.03-LTS-SP4-x86_64.qcow2.xz
+    checksum: sha256:2dc9c9d73d172af0443d1a17786ee2e387006b9912fad24b5497ef103ecd7afb
+    converted: true
+    tag: "latest"
+
+  openeuler-2403:
+    filename: openEuler-24.03-LTS-x86_64.qcow2.xz
+    url: https://mirrors.ocf.berkeley.edu/openeuler/openEuler-24.03-LTS/virtual_machine_img/x86_64/openEuler-24.03-LTS-x86_64.qcow2.xz
+    checksum: sha256:c6af522d36d659b66da668cc4eb86b032a9cff05a95a0e37505a63e70ed585dc
     converted: true
     tag: "latest"

@@ -1,4 +1,19 @@
 ---
+- name: Stop if any host not in '--limit' does not have a fact cache
+  vars:
+    uncached_hosts: "{{ hostvars | dict2items | selectattr('value.ansible_default_ipv4', 'undefined') | map(attribute='key') }}"
+    excluded_hosts: "{{ hostvars.keys() | difference(query('inventory_hostnames', ansible_limit)) }}"
+  assert:
+    that: uncached_hosts | intersect(excluded_hosts) == []
+    fail_msg: |
+      Kubespray does not support '--limit' without a populated facts cache for the excluded hosts.
+      Please run the facts.yml playbook first without '--limit'.
+      The following excluded hosts are not cached: {{ uncached_hosts | intersect(excluded_hosts) }}
+  run_once: true
+  when:
+    - ansible_limit is defined
+    - not ignore_assert_errors
+
 - name: Stop if kube_control_plane group is empty
   assert:
     that: groups.get( 'kube_control_plane' )
@@ -136,13 +151,6 @@
     - dashboard_enabled
     - not ignore_assert_errors
 
-- name: Stop if RBAC is not enabled when OCI cloud controller is enabled
-  assert:
-    that: rbac_enabled
-  when:
-    - cloud_provider is defined and cloud_provider == "oci"
-    - not ignore_assert_errors
-
 - name: Stop if kernel version is too low
   assert:
     that: ansible_kernel.split('-')[0] is version('4.9.17', '>=')
@@ -158,10 +166,19 @@
 
 - name: Check cloud_provider value
   assert:
-    that: cloud_provider in ['gce', 'aws', 'azure', 'openstack', 'vsphere', 'oci', 'external']
-    msg: "If set the 'cloud_provider' var must be set either to 'gce', 'aws', 'azure', 'openstack', 'vsphere', 'oci' or 'external'"
+    that: cloud_provider == 'external'
   when:
-    - cloud_provider is defined
+    - cloud_provider
+    - not ignore_assert_errors
+  tags:
+    - cloud-provider
+    - facts
+
+- name: Check external_cloud_provider value
+  assert:
+    that: external_cloud_provider in ['hcloud', 'huaweicloud', 'oci', 'openstack', 'vsphere']
+  when:
+    - cloud_provider == 'external'
     - not ignore_assert_errors
   tags:
     - cloud-provider
@@ -320,11 +337,6 @@
   when:
     - kube_apiserver_enable_admission_plugins is defined
     - kube_apiserver_enable_admission_plugins | length > 0
-
-- name: Verify that the packages list structure is valid
-  ansible.utils.validate:
-    criteria: "{{ lookup('file', 'pkgs-schema.json') }}"
-    data: "{{ pkgs }}"
 
 - name: Verify that the packages list is sorted
   vars:
